@@ -9,18 +9,29 @@ import {
   FormLabel,
   InputGroup,
   InputRightElement,
+  Icon,
+  InputLeftAddon,
 } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
 
 import InputError from 'Components/Atoms/InputError';
 
 interface IProps extends InputProps {
   name: string;
   type: string;
+  icon?: IconType;
   label?: string;
   helper?: string;
 }
 
-const Input: React.FC<IProps> = ({ name, label, helper, type, ...rest }) => {
+const Input: React.FC<IProps> = ({
+  name,
+  label,
+  icon,
+  helper,
+  type,
+  ...rest
+}) => {
   const { fieldName, error, registerField, defaultValue } = useField(name);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,6 +48,11 @@ const Input: React.FC<IProps> = ({ name, label, helper, type, ...rest }) => {
     <FormControl id={v4()}>
       {label && <FormLabel mb="5px">{label}</FormLabel>}
       <InputGroup>
+        {icon && (
+          <InputLeftAddon>
+            <Icon as={icon} boxSize="20px" />
+          </InputLeftAddon>
+        )}
         <BaseInput
           variant="outline"
           name={name}
