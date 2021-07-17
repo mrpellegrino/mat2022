@@ -6,7 +6,8 @@ const ButtonGroup: React.FC = ({ children }) => {
     <Stack
       mt="10px"
       spacing="10px"
-      alignItems="flex-end"
+      alignItems="center"
+      justifyContent="center"
       direction={['column', 'row']}
     >
       {children}
