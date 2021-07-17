@@ -35,7 +35,7 @@ const Button: React.FC<IProps> = ({
           colorScheme="blue"
           loadingText="Loading"
           onClick={confirmation ? () => {} : onClick}
-          minW="75px"
+          w="100%"
           {...rest}
         />
       </PopoverTrigger>

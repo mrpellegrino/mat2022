@@ -11,13 +11,13 @@ import Button from 'Components/Molecules/Button';
 const FinancialResponsibleStep: React.FC = () => {
   return (
     <Card>
-      <Alert status="info" mb="20px">
+      <Alert status="info">
         Para a elaboração do contrato de 2022, digite os dados do responsável
-        financeiro:
+        financeiro.
       </Alert>
 
       <Form onSubmit={() => {}} spacing="10px">
-        <Input type="text" name="cpf" label="CPF" placeholder="CPF" />
+        <Input type="text" name="cpf" label="CPF" />
         <Input type="date" name="birthdate" label="Data de nascimento" />
         <ButtonGroup>
           <Button type="button">Voltar</Button>

@@ -240,8 +240,8 @@ const StudentStep: React.FC = () => {
 
   return (
     <Card>
-      <Alert mb="20px" status="info">
-        Revise os dados para a elabaoração do contrato de 2022
+      <Alert status="info">
+        Revise os dados para a elaboração do contrato de 2022.
       </Alert>
 
       <Form

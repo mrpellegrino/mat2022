@@ -4,7 +4,7 @@ import NavLink from 'Components/Atoms/NavLink';
 
 const HelpLink: React.FC = () => {
   return (
-    <NavLink mt="20px" to="/help" color="blue.700">
+    <NavLink to="/help" color="blue.700">
       Preciso de ajuda!
     </NavLink>
   );
