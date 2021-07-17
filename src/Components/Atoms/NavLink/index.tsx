@@ -8,7 +8,7 @@ interface IProps extends LinkProps {
 
 const NavLink: React.FC<IProps> = ({ to, children, ...rest }) => {
   return (
-    <ChakraLink color="blue.700" as={RouterLink} to={to} {...rest}>
+    <ChakraLink as={RouterLink} to={to} {...rest}>
       {children}
     </ChakraLink>
   );
