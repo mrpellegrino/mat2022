@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useField } from '@unform/core';
 import {
   FormControl,
@@ -24,12 +24,26 @@ interface IProps extends Omit<RadioGroupProps, 'children'> {
   options: IRadioOption[];
 }
 
-const Radio: React.FC<IProps> = ({ name, label, options, ...rest }) => {
+const Radio: React.FC<IProps> = ({
+  name,
+  label,
+  options,
+  onChange,
+  ...rest
+}) => {
   const { defaultValue, error, fieldName, registerField } = useField(name);
 
   const radioRef = useRef<HTMLInputElement>(null);
 
   const [value, setValue] = useState(defaultValue);
+
+  const handleChange = useCallback(
+    (nextValue: string) => {
+      if (onChange) onChange(nextValue);
+      setValue(nextValue);
+    },
+    [onChange],
+  );
 
   useEffect(() => {
     registerField({
@@ -41,7 +55,12 @@ const Radio: React.FC<IProps> = ({ name, label, options, ...rest }) => {
 
   return (
     <FormControl>
-      <input ref={radioRef} defaultValue={defaultValue} value={value} />
+      <input
+        type="hidden"
+        ref={radioRef}
+        defaultValue={defaultValue}
+        value={value}
+      />
 
       {label && <FormLabel mb="5px">{label}</FormLabel>}
 
@@ -50,7 +69,7 @@ const Radio: React.FC<IProps> = ({ name, label, options, ...rest }) => {
           name={name}
           colorScheme="blue"
           defaultValue={defaultValue}
-          onChange={setValue}
+          onChange={nextValue => handleChange(nextValue)}
           value={value}
           {...rest}
         >

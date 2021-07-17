@@ -51,7 +51,8 @@
     "react/prop-types": "off",
     "@typescript-eslint/no-empty-function": "off",
     "react/jsx-props-no-spreading": "off",
-    "react/no-array-index-key": "off"
+    "react/no-array-index-key": "off",
+    "no-empty": "off"
   },
   "settings": {
     "import/resolver": {
