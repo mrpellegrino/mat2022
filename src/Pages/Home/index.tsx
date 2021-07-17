@@ -1,7 +1,14 @@
 import React from 'react';
+import { Container } from '@chakra-ui/react';
 
-const Test: React.FC = () => {
-  return <h1>A</h1>;
+import ResponsiblesStep from 'Components/Organisms/ResponsiblesStep';
+
+const Home: React.FC = () => {
+  return (
+    <Container maxW="lg">
+      <ResponsiblesStep />
+    </Container>
+  );
 };
 
-export default Test;
+export default Home;
