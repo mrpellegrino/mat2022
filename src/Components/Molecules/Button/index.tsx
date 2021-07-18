@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Button as BaseButton,
@@ -14,6 +14,7 @@ import {
 
 interface IProps extends ButtonProps {
   isPrimary?: boolean;
+  isGhost?: boolean;
   confirmation?: {
     body: string;
     buttonText: string;
@@ -23,15 +24,22 @@ interface IProps extends ButtonProps {
 
 const Button: React.FC<IProps> = ({
   isPrimary,
+  isGhost,
   confirmation,
   onClick,
   ...rest
 }) => {
+  const variant = useMemo(() => {
+    if (isGhost) return 'ghost';
+    if (isPrimary) return 'solid';
+    return 'outline';
+  }, [isGhost, isPrimary]);
+
   return (
     <Popover>
       <PopoverTrigger>
         <BaseButton
-          variant={isPrimary ? 'solid' : 'outline'}
+          variant={variant}
           colorScheme="blue"
           loadingText="Loading"
           onClick={confirmation ? () => {} : onClick}

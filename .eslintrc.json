@@ -52,7 +52,9 @@
     "@typescript-eslint/no-empty-function": "off",
     "react/jsx-props-no-spreading": "off",
     "react/no-array-index-key": "off",
-    "no-empty": "off"
+    "no-empty": "off",
+    "camelcase": "off",
+    "no-param-reassign": "off"
   },
   "settings": {
     "import/resolver": {

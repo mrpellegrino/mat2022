@@ -62,7 +62,6 @@ const Select: React.FC<IProps> = ({
           <BaseSelect
             name={name}
             ref={selectRef}
-            isInvalid={!!error}
             colorScheme="blue"
             defaultValue={defaultValue}
             {...rest}
