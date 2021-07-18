@@ -5,8 +5,9 @@ import HelpLink from 'Components/Atoms/HelpLink';
 import ButtonGroup from 'Components/Atoms/ButtonGroup';
 import Card from 'Components/Molecules/Card';
 import Button from 'Components/Molecules/Button';
+import IStepProps from 'Types/IStepProps';
 
-const ResponsiblesStep: React.FC = () => {
+const ResponsiblesStep: React.FC<IStepProps> = ({ setStep }) => {
   return (
     <Card>
       <Alert status="warning">
@@ -16,7 +17,7 @@ const ResponsiblesStep: React.FC = () => {
 
       <ButtonGroup>
         <Button type="button">Não</Button>
-        <Button type="button" isPrimary>
+        <Button type="button" isPrimary onClick={() => setStep(1)}>
           Sim
         </Button>
       </ButtonGroup>

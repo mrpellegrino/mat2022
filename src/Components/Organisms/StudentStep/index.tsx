@@ -37,8 +37,9 @@ import Input from 'Components/Molecules/Input';
 import Button from 'Components/Molecules/Button';
 import Select, { ISelectOption } from 'Components/Molecules/Select';
 import Radio, { IRadioOption } from 'Components/Molecules/Radio';
+import IStepProps from 'Types/IStepProps';
 
-const StudentStep: React.FC = () => {
+const StudentStep: React.FC<IStepProps> = () => {
   const formRef = useRef<FormHandles>(null);
 
   const [showHealthPlan, setShowHealthPlan] = useState(false);

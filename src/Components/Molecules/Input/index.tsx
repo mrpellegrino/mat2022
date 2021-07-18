@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useField } from '@unform/core';
 import { v4 } from 'uuid';
 import {
@@ -36,6 +36,8 @@ const Input: React.FC<IProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [errored, setErrored] = useState(!!error);
+
   useEffect(() => {
     registerField({
       name: fieldName,
@@ -43,6 +45,10 @@ const Input: React.FC<IProps> = ({
       path: 'value',
     });
   }, [registerField, fieldName, inputRef]);
+
+  useEffect(() => {
+    setErrored(!!error);
+  }, [error]);
 
   return (
     <FormControl id={v4()}>
@@ -54,6 +60,7 @@ const Input: React.FC<IProps> = ({
           </InputLeftAddon>
         )}
         <BaseInput
+          onFocus={() => setErrored(false)}
           variant="outline"
           name={name}
           ref={inputRef}
@@ -62,7 +69,7 @@ const Input: React.FC<IProps> = ({
           step={type === 'number' ? '0.01' : ''}
           {...rest}
         />
-        {error && (
+        {errored && error && (
           <InputRightElement>
             <InputError error={error} />
           </InputRightElement>

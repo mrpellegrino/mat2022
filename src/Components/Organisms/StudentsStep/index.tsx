@@ -7,34 +7,45 @@ import NavLink from 'Components/Atoms/NavLink';
 import HelpLink from 'Components/Atoms/HelpLink';
 import Card from 'Components/Molecules/Card';
 import Button from 'Components/Molecules/Button';
+import IStepProps from 'Types/IStepProps';
+import IEnrollment from 'Types/IEnrollment';
 
-const StudentsStep: React.FC = () => {
-  const students = useMemo(
-    () => [
-      {
-        name: 'Maria Gonçalves da Cruz',
-        finished: true,
-      },
-      {
-        name: 'João Gonçalves da Cruz',
+interface IStudent {
+  name: string;
+  finished: boolean;
+}
+interface IProps extends IStepProps {
+  enrollments: IEnrollment[];
+}
+
+const StudentsStep: React.FC<IProps> = ({ enrollments, setStep }) => {
+  const students = useMemo<IStudent[]>(
+    () =>
+      enrollments.map(enrollment => ({
         finished: false,
-      },
-    ],
-    [],
+        name: enrollment.student_name,
+      })),
+    [enrollments],
   );
   const reviewd = useMemo(
     () =>
       students.reduce((result, student) => result && student.finished, true),
     [students],
   );
-  const alertText = useMemo(
-    () =>
-      reviewd
-        ? 'Todos os alunos vinculados ao responsável foram matriculados com sucesso para o ano de 2022!'
-        : 'Os alunos vinculados ao responsável foram identificados. Clique em cada um deles para revisar os dados.',
-    [reviewd],
-  );
-  const alertStatus = useMemo(() => (reviewd ? 'success' : 'info'), [reviewd]);
+  const alertText = useMemo(() => {
+    if (enrollments.length === 0) {
+      return 'Não há alunos vinculados a este responsável.';
+    }
+    if (reviewd) {
+      return 'Todos os alunos vinculados ao responsável foram matriculados com sucesso para o ano de 2022!';
+    }
+    return 'Os alunos vinculados ao responsável foram identificados. Clique em cada um deles para revisar os dados.';
+  }, [enrollments, reviewd]);
+  const alertStatus = useMemo(() => {
+    if (enrollments.length === 0) return 'info';
+    if (reviewd) return 'success';
+    return 'info';
+  }, [enrollments, reviewd]);
 
   return (
     <Card>
@@ -54,7 +65,7 @@ const StudentsStep: React.FC = () => {
       </List>
 
       {reviewd && (
-        <Button type="button" isPrimary>
+        <Button type="button" isPrimary onClick={() => setStep(0)}>
           Voltar ao início
         </Button>
       )}
