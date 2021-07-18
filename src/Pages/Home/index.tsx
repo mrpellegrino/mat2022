@@ -25,7 +25,12 @@ const Home: React.FC = () => {
         enrollments={enrollments}
         setCurrentEnrollment={setCurrentEnrollment}
       />,
-      <StudentStep currentEnrollment={currentEnrollment} setStep={setStep} />,
+      <StudentStep
+        setStep={setStep}
+        enrollments={enrollments}
+        setEnrollments={setEnrollments}
+        currentEnrollment={currentEnrollment}
+      />,
     ],
     [enrollments, currentEnrollment],
   );

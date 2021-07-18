@@ -45,6 +45,7 @@ const StudentsStep: React.FC<IProps> = ({
 
   const handleSelectEnrollment = useCallback(
     (enrollment: IEnrollment) => {
+      if (enrollment.reviewd) return;
       setCurrentEnrollment(enrollment);
       setStep(3);
     },
@@ -66,6 +67,9 @@ const StudentsStep: React.FC<IProps> = ({
             <Button
               type="button"
               onClick={() => handleSelectEnrollment(enrollment)}
+              isGhost
+              textColor="black"
+              fontWeight="normal"
             >
               {enrollment.student_name}
             </Button>

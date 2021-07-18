@@ -42,12 +42,20 @@ import IEnrollment from 'Types/IEnrollment';
 import api from 'Services/api';
 import { useErrors } from 'Hooks/errors';
 import createEnrollmentSchema from 'Schemas/createEnrollmentSchema';
+import ISetState from 'Types/ISetState';
 
 interface IProps extends IStepProps {
   currentEnrollment: IEnrollment | null;
+  enrollments: IEnrollment[];
+  setEnrollments: ISetState<IEnrollment[]>;
 }
 
-const StudentStep: React.FC<IProps> = ({ currentEnrollment, setStep }) => {
+const StudentStep: React.FC<IProps> = ({
+  setStep,
+  enrollments,
+  setEnrollments,
+  currentEnrollment,
+}) => {
   const formRef = useRef<FormHandles>(null);
 
   const { handleErrors } = useErrors();
@@ -219,16 +227,14 @@ const StudentStep: React.FC<IProps> = ({ currentEnrollment, setStep }) => {
   const handleSubmit = useCallback(
     async (data: IEnrollment) => {
       try {
+        if (!currentEnrollment) return;
         setLoading(true);
         formRef.current?.setErrors({});
         await createEnrollmentSchema.validate(data, {
           abortEarly: false,
         });
-        data.enrollment_year = '2022';
-        data.type = 'reenrollment';
         data.financial_income_tax = data.financial_income_tax === 'true';
         data.student_ease_relating = data.student_ease_relating === 'true';
-        data.student_origin_school = 'Colégio Santiago';
         data.student_health_plan = showHealthPlan
           ? data.student_health_plan
           : '';
@@ -244,7 +250,21 @@ const StudentStep: React.FC<IProps> = ({ currentEnrollment, setStep }) => {
         data.student_special_necessities = showSpecialNecessities
           ? data.student_special_necessities
           : '';
-        await api.post('/reenrollments', data);
+        await api.post('/reenrollments/review', data, {
+          params: {
+            enrollment_number: currentEnrollment.enrollment_number,
+            financial_birth_date: currentEnrollment.financial_birth_date,
+            financial_cpf: currentEnrollment.financial_cpf,
+          },
+        });
+        const newEnrollments = [...enrollments];
+        newEnrollments.forEach(e => {
+          if (e.enrollment_number === currentEnrollment.enrollment_number) {
+            e.reviewd = true;
+          }
+        });
+        setEnrollments(newEnrollments);
+
         toast({
           title: 'Pedido de matrícula enviada com sucesso',
           status: 'success',
@@ -268,6 +288,9 @@ const StudentStep: React.FC<IProps> = ({ currentEnrollment, setStep }) => {
       showHealthProblem,
       showMedicationAlergy,
       showSpecialNecessities,
+      currentEnrollment,
+      enrollments,
+      setEnrollments,
     ],
   );
 
