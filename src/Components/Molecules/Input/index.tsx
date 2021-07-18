@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useField } from '@unform/core';
 import { v4 } from 'uuid';
+import { format as formatDate } from 'date-fns';
 import {
   Input as BaseInput,
   FormControl,
@@ -49,6 +50,13 @@ const Input: React.FC<IProps> = ({
   useEffect(() => {
     setErrored(!!error);
   }, [error]);
+
+  useEffect(() => {
+    if (type === 'date' && defaultValue && inputRef.current) {
+      const newDate = formatDate(new Date(defaultValue), 'yyyy-MM-dd');
+      inputRef.current.value = newDate;
+    }
+  }, [type, inputRef, defaultValue]);
 
   return (
     <FormControl id={v4()}>

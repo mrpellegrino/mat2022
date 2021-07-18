@@ -10,18 +10,24 @@ import IEnrollment from 'Types/IEnrollment';
 const Home: React.FC = () => {
   const [step, setStep] = useState(0);
   const [enrollments, setEnrollments] = useState<IEnrollment[]>([]);
+  const [currentEnrollment, setCurrentEnrollment] =
+    useState<IEnrollment | null>(null);
 
   const steps = useMemo(
     () => [
       <ResponsiblesStep setStep={setStep} />,
       <FinancialResponsibleStep
-        setEnrollments={setEnrollments}
         setStep={setStep}
+        setEnrollments={setEnrollments}
       />,
-      <StudentsStep enrollments={enrollments} setStep={setStep} />,
-      <StudentStep setStep={setStep} />,
+      <StudentsStep
+        setStep={setStep}
+        enrollments={enrollments}
+        setCurrentEnrollment={setCurrentEnrollment}
+      />,
+      <StudentStep currentEnrollment={currentEnrollment} setStep={setStep} />,
     ],
-    [enrollments],
+    [enrollments, currentEnrollment],
   );
 
   return (

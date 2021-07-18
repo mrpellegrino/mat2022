@@ -1,36 +1,32 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { List, ListIcon, ListItem } from '@chakra-ui/react';
 import { FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 
 import Alert from 'Components/Atoms/Alert';
-import NavLink from 'Components/Atoms/NavLink';
 import HelpLink from 'Components/Atoms/HelpLink';
 import Card from 'Components/Molecules/Card';
 import Button from 'Components/Molecules/Button';
 import IStepProps from 'Types/IStepProps';
 import IEnrollment from 'Types/IEnrollment';
+import ISetState from 'Types/ISetState';
 
-interface IStudent {
-  name: string;
-  finished: boolean;
-}
 interface IProps extends IStepProps {
   enrollments: IEnrollment[];
+  setCurrentEnrollment: ISetState<IEnrollment | null>;
 }
 
-const StudentsStep: React.FC<IProps> = ({ enrollments, setStep }) => {
-  const students = useMemo<IStudent[]>(
-    () =>
-      enrollments.map(enrollment => ({
-        finished: false,
-        name: enrollment.student_name,
-      })),
-    [enrollments],
-  );
+const StudentsStep: React.FC<IProps> = ({
+  setStep,
+  enrollments,
+  setCurrentEnrollment,
+}) => {
   const reviewd = useMemo(
     () =>
-      students.reduce((result, student) => result && student.finished, true),
-    [students],
+      enrollments.reduce(
+        (result, enrollment) => result && enrollment.reviewd,
+        true,
+      ),
+    [enrollments],
   );
   const alertText = useMemo(() => {
     if (enrollments.length === 0) {
@@ -47,19 +43,32 @@ const StudentsStep: React.FC<IProps> = ({ enrollments, setStep }) => {
     return 'info';
   }, [enrollments, reviewd]);
 
+  const handleSelectEnrollment = useCallback(
+    (enrollment: IEnrollment) => {
+      setCurrentEnrollment(enrollment);
+      setStep(3);
+    },
+    [setCurrentEnrollment, setStep],
+  );
+
   return (
     <Card>
       <Alert status={alertStatus}>{alertText}</Alert>
 
       <List spacing={3}>
-        {students.map((student, i) => (
+        {enrollments.map((enrollment, i) => (
           <ListItem key={i} display="flex" alignItems="center">
             <ListIcon
-              as={student.finished ? FiCheckCircle : FiAlertCircle}
+              as={enrollment.reviewd ? FiCheckCircle : FiAlertCircle}
               boxSize="20px"
-              color={`${student.finished ? 'green' : 'gray'}.500`}
+              color={`${enrollment.reviewd ? 'green' : 'gray'}.500`}
             />
-            <NavLink to="/student">{student.name}</NavLink>
+            <Button
+              type="button"
+              onClick={() => handleSelectEnrollment(enrollment)}
+            >
+              {enrollment.student_name}
+            </Button>
           </ListItem>
         ))}
       </List>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useField } from '@unform/core';
 import {
   FormControl,
@@ -33,9 +33,7 @@ const Radio: React.FC<IProps> = ({
 }) => {
   const { defaultValue, error, fieldName, registerField } = useField(name);
 
-  const radioRef = useRef<HTMLInputElement>(null);
-
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState('');
 
   const handleChange = useCallback(
     (nextValue: string) => {
@@ -48,29 +46,31 @@ const Radio: React.FC<IProps> = ({
   useEffect(() => {
     registerField({
       name: fieldName,
-      ref: radioRef.current,
-      path: 'value',
+      getValue() {
+        return value;
+      },
+      setValue(_: HTMLInputElement, newValue: string) {
+        setValue(newValue);
+      },
     });
-  }, [registerField, fieldName]);
+  }, [registerField, fieldName, value]);
+
+  useEffect(() => {
+    if (typeof defaultValue === 'boolean' || defaultValue) {
+      setValue(defaultValue.toString());
+    }
+  }, [defaultValue]);
 
   return (
     <FormControl>
-      <input
-        type="hidden"
-        ref={radioRef}
-        defaultValue={defaultValue}
-        value={value}
-      />
-
       {label && <FormLabel mb="5px">{label}</FormLabel>}
 
       <InputGroup>
         <RadioGroup
           name={name}
           colorScheme="blue"
-          defaultValue={defaultValue}
-          onChange={nextValue => handleChange(nextValue)}
           value={value}
+          onChange={nextValue => handleChange(nextValue)}
           {...rest}
         >
           <Stack direction="row">

@@ -24,7 +24,7 @@ interface IEnrollment {
   financial_email: string;
   financial_monthly_income: number;
   financial_birth_date: Date;
-  financial_income_tax: false;
+  financial_income_tax: boolean | string;
   supportive_name: string;
   supportive_kinship: string;
   supportive_rg: string;
@@ -56,12 +56,13 @@ interface IEnrollment {
   student_race: string;
   student_birth_date: Date;
   grade_name: string;
-  student_ease_relating: boolean;
+  student_ease_relating: boolean | string;
   student_health_plan: string;
   student_food_alergy: string;
   student_medication_alergy: string;
   student_health_problem: string;
   student_special_necessities: string;
+  student_origin_school: string;
   enrollment_number: number;
   reenrollment_form: string;
   contract: string;
@@ -78,6 +79,7 @@ interface IEnrollment {
   monthly_value: number;
   total_value: number;
   receipt: string;
+  reviewd: boolean;
 }
 
 export default IEnrollment;

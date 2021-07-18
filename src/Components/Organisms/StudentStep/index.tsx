@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import cepPromise from 'cep-promise';
 import { FormHandles } from '@unform/core';
-import { Checkbox } from '@chakra-ui/react';
+import { Checkbox, useToast } from '@chakra-ui/react';
 import {
   FiActivity,
   FiBriefcase,
@@ -38,9 +38,20 @@ import Button from 'Components/Molecules/Button';
 import Select, { ISelectOption } from 'Components/Molecules/Select';
 import Radio, { IRadioOption } from 'Components/Molecules/Radio';
 import IStepProps from 'Types/IStepProps';
+import IEnrollment from 'Types/IEnrollment';
+import api from 'Services/api';
+import { useErrors } from 'Hooks/errors';
+import createEnrollmentSchema from 'Schemas/createEnrollmentSchema';
 
-const StudentStep: React.FC<IStepProps> = () => {
+interface IProps extends IStepProps {
+  currentEnrollment: IEnrollment | null;
+}
+
+const StudentStep: React.FC<IProps> = ({ currentEnrollment, setStep }) => {
   const formRef = useRef<FormHandles>(null);
+
+  const { handleErrors } = useErrors();
+  const toast = useToast();
 
   const [showHealthPlan, setShowHealthPlan] = useState(false);
   const [showFoodAlergy, setShowFoodAlergy] = useState(false);
@@ -48,6 +59,7 @@ const StudentStep: React.FC<IStepProps> = () => {
   const [showMedicationAlergy, setShowMedicationAlergy] = useState(false);
   const [showSpecialNecessities, setShowSpecialNecessities] = useState(false);
   const [reuseAddress, setReuseAddress] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const educationLevelOptions = useMemo<ISelectOption[]>(
     () => [
@@ -204,40 +216,124 @@ const StudentStep: React.FC<IStepProps> = () => {
     [],
   );
 
-  useEffect(() => {
-    if (reuseAddress) {
-      const street = formRef.current?.getFieldValue('financial_address_street');
-      const number = formRef.current?.getFieldValue('financial_address_number');
-      const complement = formRef.current?.getFieldValue(
-        'financial_address_complement',
-      );
-      const neighborhood = formRef.current?.getFieldValue(
-        'financial_address_neighborhood',
-      );
-      const city = formRef.current?.getFieldValue('financial_address_city');
-      const cep = formRef.current?.getFieldValue('financial_address_cep');
+  const handleSubmit = useCallback(
+    async (data: IEnrollment) => {
+      try {
+        setLoading(true);
+        formRef.current?.setErrors({});
+        await createEnrollmentSchema.validate(data, {
+          abortEarly: false,
+        });
+        data.enrollment_year = '2022';
+        data.type = 'reenrollment';
+        data.financial_income_tax = data.financial_income_tax === 'true';
+        data.student_ease_relating = data.student_ease_relating === 'true';
+        data.student_origin_school = 'Colégio Santiago';
+        data.student_health_plan = showHealthPlan
+          ? data.student_health_plan
+          : '';
+        data.student_food_alergy = showFoodAlergy
+          ? data.student_food_alergy
+          : '';
+        data.student_medication_alergy = showMedicationAlergy
+          ? data.student_medication_alergy
+          : '';
+        data.student_health_problem = showHealthProblem
+          ? data.student_health_problem
+          : '';
+        data.student_special_necessities = showSpecialNecessities
+          ? data.student_special_necessities
+          : '';
+        await api.post('/reenrollments', data);
+        toast({
+          title: 'Pedido de matrícula enviada com sucesso',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top-right',
+        });
+        setStep(2);
+      } catch (err) {
+        handleErrors('Erro ao tentar enviar matrícula', err, formRef);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [
+      toast,
+      setStep,
+      handleErrors,
+      showHealthPlan,
+      showFoodAlergy,
+      showHealthProblem,
+      showMedicationAlergy,
+      showSpecialNecessities,
+    ],
+  );
 
-      formRef.current?.setFieldValue('supportive_address_street', street);
-      formRef.current?.setFieldValue('supportive_address_number', number);
-      formRef.current?.setFieldValue(
-        'supportive_address_complement',
-        complement,
-      );
-      formRef.current?.setFieldValue(
-        'supportive_address_neighborhood',
-        neighborhood,
-      );
-      formRef.current?.setFieldValue('supportive_address_city', city);
-      formRef.current?.setFieldValue('supportive_address_cep', cep);
-    } else {
-      formRef.current?.setFieldValue('supportive_address_street', '');
-      formRef.current?.setFieldValue('supportive_address_number', '');
-      formRef.current?.setFieldValue('supportive_address_complement', '');
-      formRef.current?.setFieldValue('supportive_address_neighborhood', '');
-      formRef.current?.setFieldValue('supportive_address_city', '');
-      formRef.current?.setFieldValue('supportive_address_cep', '');
+  useEffect(() => {
+    if (!reuseAddress) {
+      return;
     }
+    const street = formRef.current?.getFieldValue('financial_address_street');
+    const number = formRef.current?.getFieldValue('financial_address_number');
+    const complement = formRef.current?.getFieldValue(
+      'financial_address_complement',
+    );
+    const neighborhood = formRef.current?.getFieldValue(
+      'financial_address_neighborhood',
+    );
+    const city = formRef.current?.getFieldValue('financial_address_city');
+    const cep = formRef.current?.getFieldValue('financial_address_cep');
+
+    formRef.current?.setFieldValue('supportive_address_street', street);
+    formRef.current?.setFieldValue('supportive_address_number', number);
+    formRef.current?.setFieldValue('supportive_address_complement', complement);
+    formRef.current?.setFieldValue(
+      'supportive_address_neighborhood',
+      neighborhood,
+    );
+    formRef.current?.setFieldValue('supportive_address_city', city);
+    formRef.current?.setFieldValue('supportive_address_cep', cep);
   }, [reuseAddress]);
+
+  useEffect(() => {
+    if (!currentEnrollment) {
+      return;
+    }
+
+    formRef.current?.setFieldValue('grade_name', '');
+    if (currentEnrollment.student_health_plan) {
+      setShowHealthPlan(true);
+      formRef.current?.setFieldValue('has_health_plan', 'true');
+    } else {
+      formRef.current?.setFieldValue('has_health_plan', 'false');
+    }
+    if (currentEnrollment.student_medication_alergy) {
+      setShowMedicationAlergy(true);
+      formRef.current?.setFieldValue('has_medication_alergy', 'true');
+    } else {
+      formRef.current?.setFieldValue('has_medication_alergy', 'false');
+    }
+    if (currentEnrollment.student_food_alergy) {
+      setShowFoodAlergy(true);
+      formRef.current?.setFieldValue('has_food_alergy', 'true');
+    } else {
+      formRef.current?.setFieldValue('has_food_alergy', 'false');
+    }
+    if (currentEnrollment.student_health_problem) {
+      setShowHealthProblem(true);
+      formRef.current?.setFieldValue('has_health_problem', 'true');
+    } else {
+      formRef.current?.setFieldValue('has_health_problem', 'false');
+    }
+    if (currentEnrollment.student_special_necessities) {
+      setShowSpecialNecessities(true);
+      formRef.current?.setFieldValue('has_special_necessities', 'true');
+    } else {
+      formRef.current?.setFieldValue('has_special_necessities', 'false');
+    }
+  }, [currentEnrollment]);
 
   return (
     <Card>
@@ -247,10 +343,9 @@ const StudentStep: React.FC<IStepProps> = () => {
 
       <Form
         ref={formRef}
-        onSubmit={() => {
-          // console.log(data);
-        }}
+        onSubmit={handleSubmit}
         spacing="40px"
+        initialData={currentEnrollment || {}}
       >
         <FormGroup>
           <Subtitle>Dados do responsável financeiro</Subtitle>
@@ -751,7 +846,7 @@ const StudentStep: React.FC<IStepProps> = () => {
           </InputGroup>
         </FormGroup>
 
-        <Button w="100%" type="submit" isPrimary>
+        <Button isLoading={loading} w="100%" type="submit" isPrimary>
           Enviar
         </Button>
       </Form>

@@ -35,6 +35,14 @@ export const ErrorsProvider: React.FC = ({ children }) => {
       if (err instanceof YupValidationError && formRef) {
         const errors = getValidationErrors(err);
         formRef.current?.setErrors(errors);
+        toast({
+          title,
+          description: 'Algumas informações do formulário estão inválidas!',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'top-right',
+        });
         return;
       }
 
