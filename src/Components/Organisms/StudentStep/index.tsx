@@ -246,8 +246,8 @@ const StudentStep: React.FC = () => {
 
       <Form
         ref={formRef}
-        onSubmit={data => {
-          console.log(data);
+        onSubmit={() => {
+          // console.log(data);
         }}
         spacing="40px"
       >

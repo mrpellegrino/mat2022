@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@chakra-ui/react": "^1.6.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@testing-library/dom": "7.21.4",
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "cep-promise": "^4.1.1",
