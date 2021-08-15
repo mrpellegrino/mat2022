@@ -3,7 +3,6 @@ import { List, ListIcon, ListItem } from '@chakra-ui/react';
 import { FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 
 import Alert from 'Components/Atoms/Alert';
-import HelpLink from 'Components/Atoms/HelpLink';
 import Card from 'Components/Molecules/Card';
 import Button from 'Components/Molecules/Button';
 import IStepProps from 'Types/IStepProps';
@@ -47,7 +46,7 @@ const StudentsStep: React.FC<IProps> = ({
     (enrollment: IEnrollment) => {
       if (enrollment.reviewd) return;
       setCurrentEnrollment(enrollment);
-      setStep(3);
+      setStep(2);
     },
     [setCurrentEnrollment, setStep],
   );
@@ -82,8 +81,6 @@ const StudentsStep: React.FC<IProps> = ({
           Voltar ao início
         </Button>
       )}
-
-      <HelpLink />
     </Card>
   );
 };

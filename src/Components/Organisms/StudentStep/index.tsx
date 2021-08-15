@@ -28,7 +28,6 @@ import {
 
 import Alert from 'Components/Atoms/Alert';
 import Subtitle from 'Components/Atoms/Subtitle';
-import HelpLink from 'Components/Atoms/HelpLink';
 import FormGroup from 'Components/Atoms/FormGroup';
 import InputGroup from 'Components/Atoms/InputGroup';
 import Form from 'Components/Molecules/Form';
@@ -272,7 +271,7 @@ const StudentStep: React.FC<IProps> = ({
           isClosable: true,
           position: 'top-right',
         });
-        setStep(2);
+        setStep(1);
       } catch (err) {
         handleErrors('Erro ao tentar enviar matrícula', err, formRef);
       } finally {
@@ -873,8 +872,6 @@ const StudentStep: React.FC<IProps> = ({
           Enviar
         </Button>
       </Form>
-
-      <HelpLink />
     </Card>
   );
 };

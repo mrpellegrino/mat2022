@@ -21,8 +21,6 @@ const ResponsiblesStep: React.FC<IStepProps> = ({ setStep }) => {
           Sim
         </Button>
       </ButtonGroup>
-
-      <HelpLink />
     </Card>
   );
 };

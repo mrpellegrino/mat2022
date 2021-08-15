@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import { FormHandles } from '@unform/core';
 
 import Alert from 'Components/Atoms/Alert';
-import HelpLink from 'Components/Atoms/HelpLink';
 import ButtonGroup from 'Components/Atoms/ButtonGroup';
 import Card from 'Components/Molecules/Card';
 import Form from 'Components/Molecules/Form';
@@ -42,7 +41,7 @@ const FinancialResponsibleStep: React.FC<IProps> = ({
           params: data,
         });
         setEnrollments(response.data);
-        setStep(2);
+        setStep(1);
       } catch (err) {
         handleErrors('Erro ao tentar encontrar matrículas', err, formRef);
       } finally {
@@ -67,16 +66,11 @@ const FinancialResponsibleStep: React.FC<IProps> = ({
           label="Data de nascimento"
         />
         <ButtonGroup>
-          <Button type="button" onClick={() => setStep(0)}>
-            Voltar
-          </Button>
           <Button type="submit" isPrimary isLoading={loading}>
             Confirmar
           </Button>
         </ButtonGroup>
       </Form>
-
-      <HelpLink />
     </Card>
   );
 };
