@@ -202,6 +202,19 @@ const StudentStep: React.FC<IProps> = ({
     ],
     [],
   );
+  const reverseRadioOptions = useMemo<IRadioOption[]>(
+    () => [
+      {
+        text: 'Sim',
+        value: 'false',
+      },
+      {
+        text: 'Não',
+        value: 'true',
+      },
+    ],
+    [],
+  );
 
   const handleSearchAddressByCep = useCallback(
     async (cep: string, responsibleType: 'financial' | 'supportive') => {
@@ -862,8 +875,8 @@ const StudentStep: React.FC<IProps> = ({
           <InputGroup>
             <Radio
               name="student_ease_relating"
-              label="Tem facilidade de se relacionar?"
-              options={radioOptions}
+              label="Tem dificuldade de se relacionar?"
+              options={reverseRadioOptions}
             />
           </InputGroup>
         </FormGroup>
