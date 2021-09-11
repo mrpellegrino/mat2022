@@ -373,7 +373,8 @@ const StudentStep: React.FC<IProps> = ({
   return (
     <Card>
       <Alert status="info">
-        Revise os dados para a elaboração do contrato de 2022.
+        Revise os dados para elaboração dos documentos escolares do aluno
+        referente a 2022.
       </Alert>
 
       <Form
