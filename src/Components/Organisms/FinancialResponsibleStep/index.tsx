@@ -59,7 +59,7 @@ const FinancialResponsibleStep: React.FC<IProps> = ({
       </Alert>
 
       <Form ref={formRef} onSubmit={handleSubmit} spacing="10px">
-        <Input type="text" name="financial_cpf" label="CPF" />
+        <Input type="number" name="financial_cpf" label="CPF" />
         <Input
           type="date"
           name="financial_birth_date"
